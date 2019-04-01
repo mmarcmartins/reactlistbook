@@ -35,7 +35,7 @@ class BooksApp extends React.Component {
   render() {
     return (
       <div className="container">
-        {this.state.shelfs.forEach(obj => (
+        {this.state.shelfs.map(obj => (
           <ListBooks />
         ))}
       </div>
