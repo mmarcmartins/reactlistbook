@@ -2,14 +2,12 @@ import React, { Component } from "react";
 
 class ListBooks extends Component {
   render() {
-    const { index, books } = this.props;
-    console.log(books);
+    const title = this.props.name;
     return (
-      <ul key={index} className="teste">
-        {books.map(book => (
-          <li key={book.id}>{book.title}</li>
-        ))}
-      </ul>
+      <section className="list-books">
+        <h1 className="title">{title}</h1>
+        <ul className="shelf">{this.props.children}</ul>
+      </section>
     );
   }
 }
