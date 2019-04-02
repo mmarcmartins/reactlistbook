@@ -10,33 +10,28 @@ class BooksApp extends React.Component {
   };
 
   getAllShelfs = allBooks => {
-    let tempShelfs = [];
+    const newBooks = [];
 
     allBooks.forEach(book => {
-      if (tempShelfs.findIndex(e => e.shelf === book.shelf) === -1) {
-        let allBooksShelf = allBooks.filter(
-          singleBook => singleBook.shelf === book.shelf
-        );
-        tempShelfs.push({ shelf: book.shelf, books: allBooksShelf });
+      if (!Object.prototype.hasOwnProperty.call(newBooks, book.shelf)) {
+        newBooks[book.shelf] = { books: [] };
       }
+      newBooks[book.shelf].books.push({ ...book });
     });
-    return tempShelfs;
+    this.setState({ allBooks, shelfs: newBooks });
   };
 
   componentDidMount() {
     BooksAPI.getAll().then(allBooks => {
-      this.setState({
-        allBooks: allBooks,
-        shelfs: this.getAllShelfs(allBooks)
-      });
+      this.getAllShelfs(allBooks);
     });
   }
 
   render() {
     return (
       <div className="container">
-        {this.state.shelfs.map(obj => (
-          <ListBooks />
+        {Object.keys(this.state.shelfs).map(obj => (
+          <ListBooks key={obj} name={obj} {...this.state.shelfs[obj]} />
         ))}
       </div>
     );
