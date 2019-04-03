@@ -8,4 +8,113 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Roboto', sans-serif;
+  background-color: #ececec;
+}
+
+li{
+  list-style: none;
+}
+
+.container{
+  width: 1200px;
+  display: block;
+  margin: 0 auto;
+  padding: 0 15px;
+  box-sizing: border-box;
+}
+
+.list-books{
+  box-sizing: border-box;
+  padding: 2em 0;
+  display: block;
+}
+
+.shelf{
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-start;
+  margin:0;
+  padding:0;
+}
+
+.book{
+    font-size: 12px;
+    list-style: none;
+    width: 200px;
+    margin: 0 20px;
+    position: relative;
+}
+.book:first-of-type{
+  margin-left: 0;
+}
+
+.book > img {
+  width: 200px;
+  height: 260px;
+}
+
+.book .author{
+  display: inline;
+  margin-top: 10px;
+  margin-left: 5px;
+  position: relative;
+}
+.book .author:after{
+  display: inline;
+  content: ",";
+  position: relative;
+}
+
+.book .author:last-of-type:after{
+  display: none;
+}
+.book .author:first-of-type{
+  margin-top:0;
+  margin-left: 0;
+}
+.book-informations{
+  padding:10px;
+  box-sizing: border-box;
+}
+.moveToShelf{
+    position: absolute;
+    bottom: -15px;
+    right: -15px;
+    border: none;
+    background: #ccc;
+    width: 35px;
+    height: 35px;
+    box-sizing: border-box;
+    border-radius: 50%;
+}
+.moveToShelf:hover{
+  cursor: pointer;
+}
+
+.moveShelfCard{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 100%;
+    height: 100%;
+}
+
+.moveToShelf:after,.moveToShelf:before{
+    display: block;
+    content: "";
+    width: 20px;
+    height: 2px;
+    top: 17px;
+    position: absolute;
+    right: 0;
+    left: 0;
+    margin: auto;
+    background-color: #FFF;
+}
+
+.moveToShelf:before{
+  transform: rotateZ(90deg);
 }

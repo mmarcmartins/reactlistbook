@@ -50,7 +50,7 @@ class BooksApp extends React.Component {
         {Object.values(this.state.shelfs).map(obj => (
           <ListBooks key={obj.shelf} name={obj.shelf}>
             {obj.books.map(book => (
-              <Book key={book.id} book={book} />
+              <Book key={book.id} getReadable={this.getShelfReadable} allShelfs={Object.keys(this.state.shelfs)} book={book} />
             ))}
           </ListBooks>
         ))}
