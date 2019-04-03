@@ -7,7 +7,9 @@ class Book extends Component {
     const FgetReadable = this.props.getReadable;
     return (
       <li className="book" key={book.id}>
-        <img src={book.imageLinks.thumbnail} alt={book.title} />
+        <figure className="fig-img-book">
+          <img src={book.imageLinks.thumbnail} alt={book.title} />
+        </figure>
         <div className="book-informations">
           <h2>{book.title}</h2>
           {book.authors.map((aut, ind) => (
