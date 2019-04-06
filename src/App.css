@@ -1,5 +1,13 @@
 @import url("https://fonts.googleapis.com/css?family=Raleway:300,400,700");
 
+*:focus,
+*:hover,
+*:active{
+  outline: none;
+}
+*{
+  box-sizing: border-box;
+}
 html,
 body,
 .root {
@@ -92,32 +100,44 @@ body,
   color: #79777e;
 }
 
+.moveShelfCard{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 100%;
+    height: 0;
+    background-color: #cc5561;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: height .5s cubic-bezier(.99,.02,.28,.7);
+}
+
 .moveToShelf {
   position: absolute;
   bottom: -15px;
   right: -15px;
   border: none;
-  background: #ccc;
+  background-color:#00d166;
   width: 35px;
   height: 35px;
   box-sizing: border-box;
   border-radius: 50%;
+  transition: background-color .2s ease-in-out;
+  z-index: 3;
 }
 .moveToShelf:hover {
   cursor: pointer;
 }
 
-.moveShelfCard {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
-  width: 100%;
-  height: 100%;
+.moveShelfCard.is-active{
+    height: 100%;
 }
 
+.moveToShelf.is-active{
+  background-color: #221f2a;
+}
 .moveToShelf:after,
 .moveToShelf:before {
   display: block;
@@ -130,10 +150,14 @@ body,
   left: 0;
   margin: auto;
   background-color: #fff;
+  transition: transform .2s ease-in-out;
 }
 
 .moveToShelf:before {
   transform: rotateZ(90deg);
+}
+.moveToShelf.is-active:before{
+  transform: rotateZ(0);
 }
 .title {
   color: #fff;
@@ -148,4 +172,90 @@ body,
 }
 .fig-img-book {
   width: 100%;
+}
+.shelf-option{
+    padding:.5em 1em;
+    overflow: hidden;
+}
+.shelf-option label{
+  font-weight: 400;
+  font-size: 16px;
+  color: #FFF;
+  position: relative;
+  padding-left: 25px;
+}
+
+.shelf-option label:after{
+    content: "";
+    position: absolute;
+    left: 0px;
+    top: 2px;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #00d166;
+    border-radius: 25px;
+}
+.shelf-option label:before{
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 7px;
+    width: 10px;
+    height: 10px;
+    background-color: #00d166;
+    border-radius: 25px;
+    display: none;
+}
+.shelf-option input[type="radio"]:checked + label:before{
+  display: block;
+}
+.shelf-option input{
+  display: none;
+}
+
+
+.shelf-option:nth-child(1){
+  background-color:#f2283d;
+
+}
+.shelf-option:nth-child(2){
+  background-color: #7b8aea;
+
+}
+.shelf-option:nth-child(3){
+  background-color: #292531;
+  
+}
+
+.shelfList{
+  margin: 0;
+  padding: 0;
+}
+
+.moveShelfCardTitle{
+  text-align: center;
+  font-size: 40px;
+  color: #FFF;
+  padding-bottom: 5px;
+}
+
+.shelfNameAnimate{
+    position: relative;
+    left: 120%;
+    display: block;
+}
+
+.moveShelfCard.is-active .shelfNameAnimate{
+  left: 0;
+}
+
+.shelf-option:nth-child(1) .shelfNameAnimate{
+  transition: left .5s .2s cubic-bezier(.99,.02,.28,.7);
+}
+.shelf-option:nth-child(2) .shelfNameAnimate{
+  transition: left .5s .4s cubic-bezier(.99,.02,.28,.7);
+}
+
+.shelf-option:nth-child(3) .shelfNameAnimate{
+  transition: left .5s .6s cubic-bezier(.99,.02,.28,.7);
 }

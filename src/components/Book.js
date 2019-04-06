@@ -1,6 +1,19 @@
 import React, { Component } from "react";
 
 class Book extends Component {
+  state = {
+    isCardShow: false,
+    shelf: this.props.book.shelf
+  };
+
+  handleChange = evt => {
+
+    this.setState({
+      shelf: evt.currentTarget.value
+    })
+
+    this.props.changeShelf(evt.currentTarget.value, this.props.book);
+  }
   render() {
     const shelfs = this.props.allShelfs;
     const book = this.props.book;
@@ -17,12 +30,24 @@ class Book extends Component {
               {aut}
             </span>
           ))}
-          <button className="moveToShelf" />
+          <button
+            className={this.state.isCardShow ? "moveToShelf is-active" : "moveToShelf"}
+            onClick={() => this.setState({ isCardShow: !this.state.isCardShow })} />
         </div>
-        <div className="moveShelfCard">
+        <div className={this.state.isCardShow ? "moveShelfCard is-active" : "moveShelfCard"}>
+          <h2 className="moveShelfCardTitle">Shelfs</h2>
           <ul className="shelfList">
             {shelfs.map(shelf => (
-              <li key={shelf}>{FgetReadable(shelf)}</li>
+              <li className="shelf-option" key={shelf}>
+                <input
+                  id={book.id + "-" + shelf}
+                  type="radio"
+                  name={book.id}
+                  value={shelf}
+                  checked={this.state.shelf === shelf}
+                  onChange={this.handleChange}></input>
+                <label htmlFor={book.id + "-" + shelf} className="shelfNameAnimate">{FgetReadable(shelf)}</label>
+              </li>
             ))}
           </ul>
         </div>

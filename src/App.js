@@ -36,13 +36,38 @@ class BooksApp extends React.Component {
       newBooks[book.shelf].books.push({ ...book });
     });
     this.setState({ allBooks, shelfs: newBooks });
+
   };
 
   componentDidMount() {
     BooksAPI.getAll().then(allBooks => {
       this.getAllShelfs(allBooks);
     });
+
   }
+
+  changeBookShelf = (shelf, book) => {
+    const newShelfBook = [];
+
+    book.shelf = shelf;
+
+    Object.keys(this.state.shelfs).forEach(position => {
+      newShelfBook[position] = {
+        shelf: this.getShelfReadable(position),
+        books: []
+      }
+
+      let filter = this.state.shelfs[position].books.filter(b => b.id !== book.id);
+      newShelfBook[position].books.push(...filter)
+    })
+
+    newShelfBook[shelf].books.push(book)
+
+    this.setState({
+      shelfs: newShelfBook
+    })
+
+  };
 
   render() {
     return (
@@ -50,7 +75,12 @@ class BooksApp extends React.Component {
         {Object.values(this.state.shelfs).map(obj => (
           <ListBooks key={obj.shelf} name={obj.shelf}>
             {obj.books.map(book => (
-              <Book key={book.id} getReadable={this.getShelfReadable} allShelfs={Object.keys(this.state.shelfs)} book={book} />
+              <Book
+                key={book.id}
+                changeShelf={this.changeBookShelf}
+                getReadable={this.getShelfReadable}
+                allShelfs={Object.keys(this.state.shelfs)}
+                book={book} />
             ))}
           </ListBooks>
         ))}
