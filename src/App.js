@@ -3,11 +3,13 @@ import * as BooksAPI from "./BooksAPI";
 import "./App.css";
 import ListBooks from "./components/ListBooks";
 import Book from "./components/Book";
+import ModalBook from "./components/ModalBook";
 
 class BooksApp extends React.Component {
   state = {
     shelfs: [],
-    allBooks: []
+    allBooks: [],
+    selectedBook: ''
   };
 
   getShelfReadable = shelf => {
@@ -17,7 +19,7 @@ class BooksApp extends React.Component {
       case "wantToRead":
         return "Want to read";
       case "read":
-        return "Reading";
+        return "Read";
       default:
         return "all books";
     }
@@ -27,19 +29,24 @@ class BooksApp extends React.Component {
     const newBooks = [];
 
     allBooks.forEach(book => {
+
       if (!Object.prototype.hasOwnProperty.call(newBooks, book.shelf)) {
         newBooks[book.shelf] = {
           shelf: this.getShelfReadable(book.shelf),
           books: []
         };
       }
+
       newBooks[book.shelf].books.push({ ...book });
+
     });
+
     this.setState({ allBooks, shelfs: newBooks });
 
   };
 
   componentDidMount() {
+
     BooksAPI.getAll().then(allBooks => {
       this.getAllShelfs(allBooks);
     });
@@ -47,6 +54,7 @@ class BooksApp extends React.Component {
   }
 
   changeBookShelf = (shelf, book) => {
+
     const newShelfBook = [];
 
     book.shelf = shelf;
@@ -67,8 +75,12 @@ class BooksApp extends React.Component {
       shelfs: newShelfBook
     })
 
-  };
+    BooksAPI.update(book, shelf);
 
+  };
+  changeSelectedBook = book => {
+    this.setState({ selectedBook: book });
+  }
   render() {
     return (
       <div className="container">
@@ -80,10 +92,16 @@ class BooksApp extends React.Component {
                 changeShelf={this.changeBookShelf}
                 getReadable={this.getShelfReadable}
                 allShelfs={Object.keys(this.state.shelfs)}
-                book={book} />
+                book={book}
+                setSelectedBook={this.changeSelectedBook} />
             ))}
           </ListBooks>
         ))}
+        {this.state.selectedBook !== '' && (
+          <ModalBook
+            book={this.state.selectedBook}
+            setSelectedBook={this.changeSelectedBook} />
+        )}
       </div>
     );
   }

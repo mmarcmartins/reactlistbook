@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 
+
 class Book extends Component {
   state = {
     isCardShow: false,
-    shelf: this.props.book.shelf
+    shelf: this.props.book.shelf,
   };
 
   handleChange = evt => {
@@ -14,13 +15,17 @@ class Book extends Component {
 
     this.props.changeShelf(evt.currentTarget.value, this.props.book);
   }
+
   render() {
     const shelfs = this.props.allShelfs;
     const book = this.props.book;
     const FgetReadable = this.props.getReadable;
     return (
       <li className="book" key={book.id}>
-        <figure className="fig-img-book">
+        <figure className="fig-img-book" onClick={() => {
+          this.props.setSelectedBook(book)
+        }
+        } >
           <img src={book.imageLinks.thumbnail} alt={book.title} />
         </figure>
         <div className="book-informations">
@@ -51,9 +56,14 @@ class Book extends Component {
             ))}
           </ul>
         </div>
+        {this.state.isModalOpen && (
+          <singleBook modalState={this.state.isModalOpen} {...book} />
+        )
+        }
       </li>
     );
   }
+
 }
 
 export default Book;
