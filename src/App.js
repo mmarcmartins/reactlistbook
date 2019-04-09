@@ -20,6 +20,8 @@ class BooksApp extends React.Component {
         return "Want to read";
       case "read":
         return "Read";
+      case "none":
+        return "None"
       default:
         return "all books";
     }
@@ -27,7 +29,7 @@ class BooksApp extends React.Component {
 
   getAllShelfs = allBooks => {
     const newBooks = [];
-
+    console.log(allBooks);
     allBooks.forEach(book => {
 
       if (!Object.prototype.hasOwnProperty.call(newBooks, book.shelf)) {
@@ -38,7 +40,6 @@ class BooksApp extends React.Component {
       }
 
       newBooks[book.shelf].books.push({ ...book });
-
     });
 
     this.setState({ allBooks, shelfs: newBooks });
@@ -52,13 +53,22 @@ class BooksApp extends React.Component {
     });
 
   }
-
+  /* Add the book on the selected shelf */
   changeBookShelf = (shelf, book) => {
-
-    const newShelfBook = [];
-
     book.shelf = shelf;
+    const newShelfBook = this.removeBookFromArray(book);
+    newShelfBook[shelf].books.push(book)
 
+    this.setState({
+      shelfs: newShelfBook
+    })
+
+    BooksAPI.update(book, shelf);
+  };
+
+  /* Remove the selected book from the shelf*/
+  removeBookFromArray = book => {
+    const newShelfBook = [];
     Object.keys(this.state.shelfs).forEach(position => {
       newShelfBook[position] = {
         shelf: this.getShelfReadable(position),
@@ -68,34 +78,40 @@ class BooksApp extends React.Component {
       let filter = this.state.shelfs[position].books.filter(b => b.id !== book.id);
       newShelfBook[position].books.push(...filter)
     })
+    return newShelfBook;
+  }
 
-    newShelfBook[shelf].books.push(book)
-
+  /* Remove book from listing books */
+  deleteBook = book => {
+    const newBooks = this.removeBookFromArray(book);
     this.setState({
-      shelfs: newShelfBook
+      shelfs: newBooks
     })
-
-    BooksAPI.update(book, shelf);
-
-  };
+    BooksAPI.update(book, 'none');
+  }
+  /* Change selected book on modal */
   changeSelectedBook = book => {
     this.setState({ selectedBook: book });
   }
+
   render() {
     return (
       <div className="container">
         {Object.values(this.state.shelfs).map(obj => (
-          <ListBooks key={obj.shelf} name={obj.shelf}>
-            {obj.books.map(book => (
-              <Book
-                key={book.id}
-                changeShelf={this.changeBookShelf}
-                getReadable={this.getShelfReadable}
-                allShelfs={Object.keys(this.state.shelfs)}
-                book={book}
-                setSelectedBook={this.changeSelectedBook} />
-            ))}
-          </ListBooks>
+          obj.books.length > 0 && (
+            <ListBooks key={obj.shelf} name={obj.shelf}>
+              {obj.books.map(book => (
+                <Book
+                  key={book.id}
+                  changeShelf={this.changeBookShelf}
+                  getReadable={this.getShelfReadable}
+                  allShelfs={Object.keys(this.state.shelfs)}
+                  book={book}
+                  deleteBook={this.deleteBook}
+                  setSelectedBook={this.changeSelectedBook} />
+              ))}
+            </ListBooks>
+          )
         ))}
         {this.state.selectedBook !== '' && (
           <ModalBook

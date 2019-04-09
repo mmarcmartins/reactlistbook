@@ -8,12 +8,15 @@ class Book extends Component {
   };
 
   handleChange = evt => {
-
-    this.setState({
-      shelf: evt.currentTarget.value
-    })
-
-    this.props.changeShelf(evt.currentTarget.value, this.props.book);
+    if (evt.currentTarget.value !== evt.currentTarget.name) {
+      this.setState({
+        shelf: evt.currentTarget.value
+      })
+      this.props.changeShelf(evt.currentTarget.value, this.props.book);
+    }
+    else {
+      this.props.deleteBook(this.props.book);
+    }
   }
 
   render() {
@@ -21,7 +24,7 @@ class Book extends Component {
     const book = this.props.book;
     const FgetReadable = this.props.getReadable;
     return (
-      <li className="book" key={book.id}>
+      <li className="book">
         <figure className="fig-img-book" onClick={() => {
           this.props.setSelectedBook(book)
         }
@@ -43,7 +46,7 @@ class Book extends Component {
           <h2 className="moveShelfCardTitle">Shelfs</h2>
           <ul className="shelfList">
             {shelfs.map(shelf => (
-              <li className="shelf-option" key={shelf}>
+              < li className="shelf-option" key={shelf} >
                 <input
                   id={book.id + "-" + shelf}
                   type="radio"
@@ -54,6 +57,17 @@ class Book extends Component {
                 <label htmlFor={book.id + "-" + shelf} className="shelfNameAnimate">{FgetReadable(shelf)}</label>
               </li>
             ))}
+            < li className="shelf-option" key='none' >
+              <input
+                id={book.id + "-none"}
+                type="radio"
+                name={book.id}
+                value={book.id}
+                checked={this.state.shelf === 'none'}
+                onChange={this.handleChange}></input>
+              <label htmlFor={book.id + "-none"} className="shelfNameAnimate">{FgetReadable('none')}</label>
+            </li>
+
           </ul>
         </div>
         {this.state.isModalOpen && (

@@ -3,7 +3,6 @@ import React from "react";
 
 function ModalBook(props) {
     const { book, setSelectedBook } = props;
-    console.log(book)
     const bookImage = `http://books.google.com/books/content?id=${book.id}&printsec=frontcover&img=1&zoom=2&source=gbs_api`;
     return (
         <div className="modal">
@@ -30,7 +29,7 @@ function ModalBook(props) {
                             <span className="totalPages">Page counts: {book.pageCount}</span>
                         </div>
 
-                        <a target="_blank" href={book.canonicalVolumeLink.replace(/"/g, book.canonicalVolumeLink)}>See more</a></div>
+                        <a target="_blank" rel="noopener noreferrer" href={book.canonicalVolumeLink.replace(/"/g, book.canonicalVolumeLink)}>See more</a></div>
                 </div>
             </div>
         </div>
