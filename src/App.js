@@ -1,16 +1,40 @@
 import React from "react";
 import "./App.css";
 import ModalBook from "./components/ModalBook";
-import PaginalInicial from "./pages/PaginaInicial"
-import SearchPage from "./pages/SearchPage"
-import { Link } from "react-router-dom";
+import PaginalInicial from "./pages/PaginaInicial";
+import SearchPage from "./pages/SearchPage";
+
 import { Route } from "react-router-dom";
+import { getAll } from "./BooksAPI";
 
 class BooksApp extends React.Component {
-
   state = {
-    selectedBook: '',
-    shelfsAvaliable: []
+    selectedBook: "",
+    shelfsPerBook: [],
+    hasToUpdate: false
+  };
+
+  componentDidMount() {
+    getAll().then(allBooks => {
+      this.getAllShelfs(allBooks);
+    });
+  }
+
+  getAllShelfs = allBooks => {
+    const newBooks = [];
+    allBooks.forEach(book => {
+      if (!Object.prototype.hasOwnProperty.call(newBooks, book.shelf)) {
+        newBooks[book.shelf] = {
+          shelf: this.getShelfReadable(book.shelf),
+          books: []
+        };
+      }
+
+      newBooks[book.shelf].books.push({ ...book });
+    });
+
+    this.setState({ shelfsPerBook: newBooks });
+    return newBooks;
   };
 
   getShelfReadable = shelf => {
@@ -22,7 +46,7 @@ class BooksApp extends React.Component {
       case "read":
         return "Read";
       case "none":
-        return "None"
+        return "None";
       default:
         return "all books";
     }
@@ -31,36 +55,49 @@ class BooksApp extends React.Component {
   /* Change selected book on modal */
   changeSelectedBook = selectedBook => {
     this.setState({ selectedBook });
-  }
+  };
 
-  updateShelfs = shelfsAvaliable => {
-    this.setState({ shelfsAvaliable })
-  }
+  changeShelfPerBook = shelfsPerBook => {
+    this.setState({ shelfsPerBook });
+  };
 
   render() {
     return (
       <div className="container">
-        <Link className="searchButton" to="/search" />
+        <Route
+          path="/"
+          exact
+          render={() => (
+            <PaginalInicial
+              changeSelectedBook={this.changeSelectedBook}
+              getShelfReadable={this.getShelfReadable}
+              getAllShelfs={this.getAllShelfs}
+              shelfsPerBook={this.state.shelfsPerBook}
+              changeShelfPerBook={this.changeShelfPerBook}
+              hasToUpdate={this.state.hasToUpdate}
+              changeUpdate={e => this.setState({ hasToUpdate: e })}
+            />
+          )}
+        />
 
-        <Route path="/" exact render={() => (
-          <PaginalInicial
-            changeSelectedBook={this.changeSelectedBook}
-            getShelfReadable={this.getShelfReadable}
-            updateShelfs={this.updateShelfs} />)} />
-
-        {(this.state.shelfsAvaliable.length > 0 &&
-          <Route path="/search" exact render={() => (
+        <Route
+          path="/search"
+          exact
+          render={() => (
             <SearchPage
               getShelfReadable={this.getShelfReadable}
-              shelfsAvaliable={this.state.shelfsAvaliable}
-              changeSelectedBook={this.changeSelectedBook} />)} />
-        )}
-        {this.state.selectedBook !== '' && (
+              shelfsAvaliable={Object.keys(this.state.shelfsPerBook)}
+              changeSelectedBook={this.changeSelectedBook}
+              changeUpdate={e => this.setState({ hasToUpdate: e })}
+            />
+          )}
+        />
+        {this.state.selectedBook !== "" && (
           <ModalBook
             book={this.state.selectedBook}
-            setSelectedBook={this.changeSelectedBook} />
+            setSelectedBook={this.changeSelectedBook}
+          />
         )}
-
       </div>
     );
   }
