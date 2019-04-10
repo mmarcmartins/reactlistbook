@@ -13,7 +13,7 @@ class Book extends Component {
       });
       this.props.changeShelf(evt.currentTarget.value, this.props.book);
     } else {
-      this.props.deleteBook && this.props.deleteBook(this.props.book);
+      this.props.deleteBook(this.props.book);
     }
   };
 
@@ -77,21 +77,19 @@ class Book extends Component {
                 </label>
               </li>
             ))}
-            {this.props.deleteBook && (
-              <li className="shelf-option" key="none">
-                <input
-                  id={book.id + "-none"}
-                  type="radio"
-                  name={book.id}
-                  value={book.id}
-                  checked={this.state.shelf === "none"}
-                  onChange={this.handleChange}
-                />
-                <label htmlFor={book.id + "-none"} className="shelfNameAnimate">
-                  {FgetReadable("none")}
-                </label>
-              </li>
-            )}
+            <li className="shelf-option" key="none">
+              <input
+                id={book.id + "-none"}
+                type="radio"
+                name={book.id}
+                value={book.id}
+                checked={this.state.shelf === "none" || !this.state.shelf}
+                onChange={this.handleChange}
+              />
+              <label htmlFor={book.id + "-none"} className="shelfNameAnimate">
+                {FgetReadable("none")}
+              </label>
+            </li>
           </ul>
         </div>
         {this.state.isModalOpen && (

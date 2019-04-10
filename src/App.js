@@ -11,7 +11,8 @@ class BooksApp extends React.Component {
   state = {
     selectedBook: "",
     shelfsPerBook: [],
-    hasToUpdate: false
+    hasToUpdate: false,
+    allBooks: []
   };
 
   componentDidMount() {
@@ -33,7 +34,7 @@ class BooksApp extends React.Component {
       newBooks[book.shelf].books.push({ ...book });
     });
 
-    this.setState({ shelfsPerBook: newBooks });
+    this.setState({ allBooks, shelfsPerBook: newBooks });
     return newBooks;
   };
 
@@ -88,6 +89,7 @@ class BooksApp extends React.Component {
               getShelfReadable={this.getShelfReadable}
               shelfsAvaliable={Object.keys(this.state.shelfsPerBook)}
               changeSelectedBook={this.changeSelectedBook}
+              allBooks={this.state.allBooks}
               changeUpdate={e => this.setState({ hasToUpdate: e })}
             />
           )}

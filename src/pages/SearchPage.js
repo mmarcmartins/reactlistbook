@@ -1,5 +1,5 @@
 import React from "react";
-import { search, update } from "../BooksAPI";
+import { search, update, getAll } from "../BooksAPI";
 import ListBooks from "../components/ListBooks";
 import Book from "../components/Book";
 import { Link } from "react-router-dom";
@@ -25,15 +25,22 @@ class SearchPage extends React.Component {
 
   changeBookShelf = (shelf, book) => {
     book.shelf = shelf;
-    update(book, shelf).then(r => {
+    update(book, shelf).then(() => {
       this.props.changeUpdate(true);
-      //this.setState({ filteredBooks, searchedFor: query });
     });
   };
 
+  getShelfFromBook = book => {
+    book.shelf = this.props.allBooks.filter(b => {
+      if (b.id === book.id) {
+        return b.shelf;
+      }
+      return "none";
+    });
+  };
   render() {
     const shelfsAvaliable = this.props.shelfsAvaliable;
-    console.log(this.state.filteredBooks);
+
     return (
       <div className="container">
         <div className="searchName">
@@ -72,7 +79,9 @@ class SearchPage extends React.Component {
                   changeShelf={this.changeBookShelf}
                   getReadable={this.props.getShelfReadable}
                   allShelfs={shelfsAvaliable}
-                  book={book}
+                  deleteBook={this.changeBookShelf}
+                  allBooks={this.props.allBooks}
+                  book={this.getShelfFromBook(book)}
                   setSelectedBook={this.props.changeSelectedBook}
                 />
               ))}
