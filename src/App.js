@@ -13,6 +13,7 @@ class BooksApp extends React.Component {
     shelfsPerBook: [],
     hasToUpdate: false,
     allBooks: []
+
   };
 
   componentDidMount() {
@@ -62,6 +63,15 @@ class BooksApp extends React.Component {
     this.setState({ shelfsPerBook });
   };
 
+  changeShelfAllBooks = book => {
+    const index = this.state.allBooks.findIndex(b => b.id === book.id);
+    const auxBooks = this.state.allBooks;
+    auxBooks[index] = book;
+    this.setState({
+      allBooks: auxBooks
+    });
+  }
+
   render() {
     return (
       <div className="container">
@@ -71,6 +81,7 @@ class BooksApp extends React.Component {
           render={() => (
             <PaginalInicial
               changeSelectedBook={this.changeSelectedBook}
+              changeShelfAllBooks={this.changeShelfAllBooks}
               getShelfReadable={this.getShelfReadable}
               getAllShelfs={this.getAllShelfs}
               shelfsPerBook={this.state.shelfsPerBook}
@@ -90,6 +101,7 @@ class BooksApp extends React.Component {
               shelfsAvaliable={Object.keys(this.state.shelfsPerBook)}
               changeSelectedBook={this.changeSelectedBook}
               allBooks={this.state.allBooks}
+
               changeUpdate={e => this.setState({ hasToUpdate: e })}
             />
           )}

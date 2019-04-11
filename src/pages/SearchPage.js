@@ -1,14 +1,16 @@
 import React from "react";
-import { search, update, getAll } from "../BooksAPI";
+import { search, update } from "../BooksAPI";
 import ListBooks from "../components/ListBooks";
 import Book from "../components/Book";
 import { Link } from "react-router-dom";
+import Loader from "../components/Loader";
 
 class SearchPage extends React.Component {
   state = {
     query: "",
     filteredBooks: [],
-    searchedFor: ""
+    searchedFor: "",
+    loading: false,
   };
 
   handleSubmit = evt => {
@@ -17,8 +19,9 @@ class SearchPage extends React.Component {
   };
   searchQuery = query => {
     if (query.trim() !== "") {
+      this.setState({ loading: true, filteredBooks: '' });
       search(query).then(filteredBooks => {
-        this.setState({ filteredBooks, searchedFor: query });
+        this.setState({ filteredBooks, searchedFor: query, loading: false });
       });
     }
   };
@@ -31,16 +34,15 @@ class SearchPage extends React.Component {
   };
 
   getShelfFromBook = book => {
-    book.shelf = this.props.allBooks.filter(b => {
-      if (b.id === book.id) {
-        return b.shelf;
-      }
-      return "none";
-    });
+    let bookShelf = null;
+    bookShelf = this.props.allBooks.filter(b => b.id === book.id);
+    book.shelf = bookShelf !== null && bookShelf.length > 0 ? bookShelf[0].shelf : 'none';
+    return book;
   };
+
+
   render() {
     const shelfsAvaliable = this.props.shelfsAvaliable;
-
     return (
       <div className="container">
         <div className="searchName">
@@ -65,6 +67,10 @@ class SearchPage extends React.Component {
         </div>
 
         <div className="result">
+          {this.state.loading && (
+            <Loader />
+          )}
+
           {this.state.searchedFor && (
             <p className="searchTerm">
               You've searched for {this.state.searchedFor}
@@ -79,7 +85,6 @@ class SearchPage extends React.Component {
                   changeShelf={this.changeBookShelf}
                   getReadable={this.props.getShelfReadable}
                   allShelfs={shelfsAvaliable}
-                  deleteBook={this.changeBookShelf}
                   allBooks={this.props.allBooks}
                   book={this.getShelfFromBook(book)}
                   setSelectedBook={this.props.changeSelectedBook}

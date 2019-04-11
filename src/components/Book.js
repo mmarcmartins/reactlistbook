@@ -7,16 +7,25 @@ class Book extends Component {
   };
 
   handleChange = evt => {
-    if (evt.currentTarget.value !== evt.currentTarget.name) {
-      this.setState({
-        shelf: evt.currentTarget.value
-      });
-      this.props.changeShelf(evt.currentTarget.value, this.props.book);
+    if (evt.currentTarget.value !== 'none') {
+      /* Method for main page */
+      this.updateShelf(evt);
     } else {
-      this.props.deleteBook(this.props.book);
+      if (this.props.deleteBook) {
+        this.props.deleteBook(this.props.book)
+      }
+      else {
+        this.updateShelf(evt);
+      }
+
     }
   };
-
+  updateShelf = (evt) => {
+    this.setState({
+      shelf: evt.currentTarget.value
+    });
+    this.props.changeShelf(evt.currentTarget.value, this.props.book);
+  }
   render() {
     const shelfs = this.props.allShelfs;
     const book = this.props.book;
@@ -32,8 +41,8 @@ class Book extends Component {
           {book.imageLinks ? (
             <img src={book.imageLinks.thumbnail} alt={book.title} />
           ) : (
-            <img src={placeholder} alt={book.title} />
-          )}
+              <img src={placeholder} alt={book.title} />
+            )}
         </figure>
         <div className="book-informations">
           <h2>{book.title}</h2>
@@ -82,7 +91,7 @@ class Book extends Component {
                 id={book.id + "-none"}
                 type="radio"
                 name={book.id}
-                value={book.id}
+                value='none'
                 checked={this.state.shelf === "none" || !this.state.shelf}
                 onChange={this.handleChange}
               />
