@@ -12,8 +12,8 @@ class BooksApp extends React.Component {
     selectedBook: "",
     shelfsPerBook: [],
     hasToUpdate: false,
-    allBooks: []
-
+    allBooks: [],
+    baseShelfs: ["currentlyReading", "wantToRead", "read"]
   };
 
   componentDidMount() {
@@ -24,6 +24,7 @@ class BooksApp extends React.Component {
 
   getAllShelfs = allBooks => {
     const newBooks = [];
+
     allBooks.forEach(book => {
       if (!Object.prototype.hasOwnProperty.call(newBooks, book.shelf)) {
         newBooks[book.shelf] = {
@@ -31,10 +32,22 @@ class BooksApp extends React.Component {
           books: []
         };
       }
-
       newBooks[book.shelf].books.push({ ...book });
     });
-
+    /* 
+      All the shelfs on the app previously this script right down was dynamic, with 
+      this script it has to have at least the 3 shelfs on 
+      'baseShelf' pushed
+    */
+    this.state.baseShelfs.forEach(shelfBase => {
+      if (!Object.prototype.hasOwnProperty.call(newBooks, shelfBase)) {
+        newBooks[shelfBase] = {
+          shelf: this.getShelfReadable(shelfBase),
+          books: []
+        };
+      }
+    });
+    /* End of script */
     this.setState({ allBooks, shelfsPerBook: newBooks });
     return newBooks;
   };
@@ -70,7 +83,7 @@ class BooksApp extends React.Component {
     this.setState({
       allBooks: auxBooks
     });
-  }
+  };
 
   render() {
     return (
@@ -101,7 +114,6 @@ class BooksApp extends React.Component {
               shelfsAvaliable={Object.keys(this.state.shelfsPerBook)}
               changeSelectedBook={this.changeSelectedBook}
               allBooks={this.state.allBooks}
-
               changeUpdate={e => this.setState({ hasToUpdate: e })}
             />
           )}
