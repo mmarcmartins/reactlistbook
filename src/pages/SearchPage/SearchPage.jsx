@@ -1,48 +1,44 @@
 import React from "react";
-import { search, update } from "../BooksAPI";
-import ListBooks from "../components/ListBooks";
-import Book from "../components/Book";
+import { search } from "../../api/BooksAPI";
 import { Link } from "react-router-dom";
-import Loader from "../components/Loader";
+
+import ListBooks from "../../components/list/ListBooks";
+import BookTemplate from "../../components/book/Book";
+import Loader from "../../components/loader/Loader";
 
 class SearchPage extends React.Component {
   state = {
     query: "",
     filteredBooks: [],
     searchedFor: "",
-    loading: false,
   };
 
   handleSubmit = evt => {
     evt.preventDefault();
     this.searchQuery(evt.target.elements.pesquisa.value);
   };
+
   searchQuery = query => {
     if (query.trim() !== "") {
-      this.setState({ loading: true, filteredBooks: '' });
+      this.setState({ loading: true, filteredBooks: [] });
       search(query).then(filteredBooks => {
-        this.setState({ filteredBooks, searchedFor: query, loading: false });
+        const books = this.findShelvBook(filteredBooks);
+        this.setState({ filteredBooks: books, searchedFor: query, loading: false });
       });
     }
   };
 
-  changeBookShelf = (shelf, book) => {
-    book.shelf = shelf;
-    update(book, shelf).then(() => {
-      this.props.changeUpdate(true);
+  findShelvBook = books => {
+    const shelvBooks = this.props.books;
+    return books.map(b => {
+      const indexBook = shelvBooks.findIndex(shelvBook => shelvBook.id === b.id);
+      b.shelf = indexBook !== -1 ? shelvBooks[indexBook].shelf : 'none';
+      return b;
     });
-  };
-
-  getShelfFromBook = book => {
-    let bookShelf = null;
-    bookShelf = this.props.allBooks.filter(b => b.id === book.id);
-    book.shelf = bookShelf !== null && bookShelf.length > 0 ? bookShelf[0].shelf : 'none';
-    return book;
-  };
-
+  }
 
   render() {
-    const shelfsAvaliable = this.props.shelfsAvaliable;
+    const { shelvs, setSelectedBook, changeShelv, prettifyName } = this.props;
     return (
       <div className="container">
         <div className="searchName">
@@ -79,15 +75,14 @@ class SearchPage extends React.Component {
 
           {this.state.filteredBooks.length > 0 && (
             <ListBooks key="search" name="Search">
-              {this.state.filteredBooks.map(book => (
-                <Book
-                  key={book.id}
-                  changeShelf={this.changeBookShelf}
-                  getReadable={this.props.getShelfReadable}
-                  allShelfs={shelfsAvaliable}
-                  allBooks={this.props.allBooks}
-                  book={this.getShelfFromBook(book)}
-                  setSelectedBook={this.props.changeSelectedBook}
+              {this.state.filteredBooks.map((book, key) => (
+                <BookTemplate
+                  key={key}
+                  book={book}
+                  shelvs={shelvs}
+                  setSelectedBook={setSelectedBook}
+                  changeShelv={changeShelv}
+                  prettifyName={prettifyName}
                 />
               ))}
             </ListBooks>
